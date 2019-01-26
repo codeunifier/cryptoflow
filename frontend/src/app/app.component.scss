@@ -1,0 +1,21 @@
+@import "../scss/variables";
+
+$title-height: 100px;
+$title-text-offest: 15;
+$title-font-size: 70px;
+
+.wrapper {
+    width: $body-width;
+    min-width: $body-min-width;
+    max-width: $body-max-width;
+}
+
+.title {
+    width: 100%;
+    height: $title-height;
+    line-height: $title-height - $title-text-offest;
+    font-family: $chewy-font;
+    font-size: $title-font-size;
+    background-color: $background-color;
+    cursor: default;
+}
