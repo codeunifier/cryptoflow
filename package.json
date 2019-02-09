@@ -6,6 +6,7 @@
     "start": "ng serve",
     "start-server": "nodemon ./server/server.js",
     "start-app": "concurrently \"npm:start\" \"npm:start-server\"",
+    "postinstall": "ng build --prod",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
