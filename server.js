@@ -11,10 +11,10 @@ app.route("/api/test").get((req, res) => {
     res.status(200).send("Hello from server!");
 });
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist/cryptoflow')));
 
 app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '/dist/cryptoflow/index.html'));
+    res.sendFile(path.join(__dirname, 'dist/cryptoflow/index.html'));
 });
 
 app.get((req, res, next) => {
