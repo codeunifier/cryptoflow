@@ -1,6 +1,11 @@
 import csv
+import requests
  
 class DataManager:
+    """
+    To download the data from kaggle, use "kaggle datasets download download sudalairajkumar/cryptocurrencypricehistory -f bitcoin_price.csv"
+    in a command prompt
+    """
     def save_to_csv_file(self, data, filepath):
         with open(filepath, 'w', newline="") as my_file:
             writer = csv.writer(my_file)

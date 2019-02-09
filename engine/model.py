@@ -11,14 +11,17 @@ class CryptoModel:
     def create(self, shape):
         print("Creating model...")
 
-        epochs = 100
+        units = 50
+        dropout_value = 0.2 # 20% dropout to fight against overfitting
         self.__model = keras.models.Sequential()
 
         # 2 layers
-        self.__model.add(keras.layers.LSTM(epochs, return_sequences=True, input_shape=(shape[1], shape[2])))
-        self.__model.add(keras.layers.LSTM(epochs, input_shape=(shape[1], shape[2])))
-        self.__model.add(keras.layers.Dense(1))
-        self.__model.compile(loss="mae", optimizer="adam", metrics=['accuracy'])
+        self.__model.add(keras.layers.LSTM(units, return_sequences=True, input_shape=(shape[1], shape[2])))
+        # self.__model.add(keras.layers.Dropout(dropout_value))
+        self.__model.add(keras.layers.LSTM(units, input_shape=(shape[1], shape[2])))
+        # self.__model.add(keras.layers.Dropout(dropout_value))
+        self.__model.add(keras.layers.Dense(1)) #1 = a single output node
+        self.__model.compile(loss="mse", optimizer="adam", metrics=['accuracy'])
         # self.__model.compile(loss="binary_crossentropy", optimizer="adam", metrics=['accuracy'])
 
         # 1 layer
@@ -37,8 +40,10 @@ class CryptoModel:
         #150 epochs, 100 batch size - acted the same as with 300 epoches (best 412)
         #50 epochs, 100 batch size - much more sporratic results (best 414)
         #120 epochs, 100 batch size - same as 150 and 300 epochs (best 409)
-        #return self.__model.fit(train_x, train_y, epochs=100, batch_size=200, validation_data=(test_x, test_y), verbose=0, shuffle=False)#, callbacks=[plot_losses])
-        return self.__model.fit(train_x, train_y, epochs=200, batch_size=100, validation_data=(test_x, test_y), verbose=0, shuffle=False)#, callbacks=[plot_losses])
+
+        #verbosity - 0 = silent, 1 = progress bar, 2 = one line per epoch
+        return self.__model.fit(train_x, train_y, epochs=100, batch_size=200, validation_data=(test_x, test_y), verbose=2, shuffle=False)
+        #return self.__model.fit(train_x, train_y, epochs=100, batch_size=200, validation_split=0.3, verbose=1, shuffle=False)
     
     def predict(self, x):
         print("Making prediction...")

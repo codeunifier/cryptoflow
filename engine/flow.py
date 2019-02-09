@@ -7,9 +7,9 @@ https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-
 https://www.kaggle.com/jphoon/bitcoin-time-series-prediction-with-lstm
 https://machinelearningmastery.com/stacked-long-short-term-memory-networks/
 https://machinelearningmastery.com/diagnose-overfitting-underfitting-lstm-models/
+https://nicholastsmith.wordpress.com/2017/11/13/cryptocurrency-price-prediction-using-deep-learning-in-tensorflow/
+http://androidkt.com/predic-cryptocurrency-price-tensorflow-keras/ - garbage
 
-Kaggle command to download data:
-kaggle datasets download download sudalairajkumar/cryptocurrencypricehistory -f bitcoin_price.csv
 """
 
 import pandas as pd
@@ -25,18 +25,25 @@ from sklearn.metrics import mean_absolute_error
 
 from model import CryptoModel
 from graph import *
+from pastsampler import PastSampler 
 
 def create_dataset(dataset, look_back = 1):
+    #function taken from https://activewizards.com/blog/bitcoin-price-forecasting-with-deep-learning-algorithms/
+    #also found here: https://www.kaggle.com/ternaryrealm/lstm-time-series-explorations-with-keras
+    # What this is doing is offsetting the data by look_back, so that any given input should be predicting the next value
+    # I think it makes sense when thinking about it, but I don't think that's how a machine learning model is supposed to work
     dataX, dataY = [], []
     for i in range(len(dataset) - look_back):
         a = dataset[i:(i + look_back), 0]
         dataX.append(a)
         dataY.append(dataset[i + look_back, 0])
-    print(len(dataY))
     return np.array(dataX), np.array(dataY)
 
 #read in the original data reversed so the earliest dates are first
 original_data = pd.read_csv("./data/bitcoin_price.csv").iloc[::-1]
+
+#or don't do that because then the test data is the oldest crap
+# original_data = pd.read_csv("./data/bitcoin_price.csv")
 
 #visualize some of the original data
 print("Original data:")
@@ -46,9 +53,26 @@ print()
 #convert the date into a timestamp
 original_data["timestamp"] = [datetime.datetime.strptime(date, "%b %d, %Y").timestamp() for date in original_data["Date"]]
 
-print("Converted original data:")
-print(original_data.head(10))
-print()
+new_train_data = original_data.sample(frac=0.8, random_state=0)
+new_test_data = original_data.drop(new_train_data.index)
+
+print("New Train Data:")
+print(new_train_data.head(10))
+print("New Test Data:")
+print(new_test_data.head(10))
+# print("Converted original data:")
+# print(original_data.head(10))
+# print()
+
+
+new_train_stats = new_train_data.describe()
+new_train_stats.pop("Close")
+new_train_stats = new_train_stats.transpose()
+print("Transposed training data stats:")
+print(new_train_stats)
+
+train_labels = new_train_data.pop("Close")
+test_labels = new_test_data.pop("Close")
 
 #scale the price data to lie between 0 and 1
 values = original_data["Close"].values.reshape(-1, 1)
@@ -56,14 +80,28 @@ values = values.astype('float32')
 scaler = MinMaxScaler(feature_range=(0, 1))
 scaled = scaler.fit_transform(values)
 
-print("Scaled data:")
+scaled_train_labels = scaler.fit_transform(train_labels.values.reshape(-1, 1).astype('float32'))
+scaled_test_labels = scaler.fit_transform(test_labels.values.reshape(-1, 1).astype('float32'))
+
+print("Scaled close data:")
 print(scaled)
 print()
 
+# print("Scaled new train labels:")
+# print(scaled_train_labels)
+# print("Scaled new test labels:")
+# print(scaled_test_labels)
+
+normed_train_data = (new_train_data['timestamp'] - new_train_stats['mean']) / new_train_stats['std']
+normed_test_data = (new_test_data['timestamp'] - new_train_stats['mean'] / new_train_stats['std'])
+
+print("Normalized train data:")
+print(normed_train_data)
+
 #split data into train and test sets
 train_size = int(len(scaled) * .7)
-test_size = len(scaled) - train_size
-train_data, test_data = scaled[0:train_size,:], scaled[train_size:len(scaled),:]
+train_data = scaled[0:train_size,:] 
+test_data = scaled[train_size:len(scaled),:]
 print(len(train_data), len(test_data))
 
 #create the dataset
@@ -71,9 +109,18 @@ look_back = 1
 train_x, train_y = create_dataset(train_data, look_back)
 test_x, test_y = create_dataset(test_data, look_back)
 
-#reshape X for model training
+# print("\n\nBefore reshaping")
+# print(train_x)
+# print(test_x)
+
+#reshape the input data for model training
 train_x = np.reshape(train_x, (train_x.shape[0], 1, train_x.shape[1]))
 test_x = np.reshape(test_x, (test_x.shape[0], 1, test_x.shape[1]))
+
+# print("After reshaping")
+# print(train_x)
+# print(test_x)
+# print("\n")
 
 rmse = 10000
 max_attempts = 5
@@ -90,7 +137,6 @@ for i in range(0, max_attempts):
     print("Round %d/%d" % (round_num, max_attempts))
 
     #create the model
-    #model = create_model(train_x.shape)
     my_model = CryptoModel()
     my_model.create(train_x.shape)
 
@@ -128,4 +174,4 @@ print("\nBest RMSE: %.3f\n" % (best_rmse))
 
 graph_loss_against_validation(loss_result, val_result)
 
-graph_accuracy_against_validation(acc_result, val_acc_result)
+#graph_accuracy_against_validation(acc_result, val_acc_result)
