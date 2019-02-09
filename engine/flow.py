@@ -11,7 +11,7 @@ https://nicholastsmith.wordpress.com/2017/11/13/cryptocurrency-price-prediction-
 http://androidkt.com/predic-cryptocurrency-price-tensorflow-keras/ - garbage
 
 """
-
+#this is on dev
 import pandas as pd
 import numpy as np
 import time
