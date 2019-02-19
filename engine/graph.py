@@ -45,8 +45,13 @@ def graph_accuracy_against_validation(acc, val):
     plt.legend()
     plt.show()
 
-def graph_predictions_against_actual(predict, actual):    
+def graph_predictions_against_actual(predict, actual):
     plt.plot(predict, label="predict")
     plt.plot(actual, label="actual")
+    plt.legend()
+    plt.show()
+
+def graph_future_predictions(predict):
+    plt.plot(predict, label="future")
     plt.legend()
     plt.show()
