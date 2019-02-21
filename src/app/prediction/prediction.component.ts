@@ -10,18 +10,29 @@ import { Subscription } from 'rxjs';
 export class PredictionComponent implements OnInit {
   predictionSub: Subscription;
   prediction: number;
+  hasErrored: boolean = false;
 
   constructor(private pyService: PythonService) { }
 
   ngOnInit() {
-    this.predictionSub = this.pyService.getPrediction().subscribe(p => {
-      this.prediction = p;
-    });
+    this.makePrediction();
   }
 
   ngOnDestroy() {
     if (this.predictionSub) {
       this.predictionSub.unsubscribe();
     }
+  }
+
+  onPredictionRefreshClick(): void {
+    this.makePrediction();
+  }
+
+  private makePrediction(): void {
+    this.prediction = null;
+    this.predictionSub = this.pyService.getPrediction().subscribe(p => {
+      this.hasErrored = p == null;
+      this.prediction = p;
+    });
   }
 }

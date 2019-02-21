@@ -2,3 +2,15 @@
     font-family: "Chewy";
     src: url("/assets/fonts/Chewy.ttf") format("truetype");
 }
+
+button {
+    background-color: lightskyblue;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+button:hover {
+    background-color: rgb(86, 203, 241);
+}

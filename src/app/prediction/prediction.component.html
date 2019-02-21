@@ -1,6 +1,11 @@
-<div *ngIf="prediction">
-    <span>Tomorrow's prediction: ${{prediction}}</span>
-</div>
-<div *ngIf="!prediction">
-    <span>Loading prediction...</span>
+<div>
+    <div *ngIf="prediction">
+        <span>Tomorrow's prediction: ${{prediction}}</span>
+    </div>
+    <div *ngIf="!prediction">
+        <span>Loading prediction...</span>
+    </div>
+    <div class="button-container">
+        <button class="l-button" (click)="onPredictionRefreshClick()">Refresh Prediction</button>
+    </div>
 </div>
