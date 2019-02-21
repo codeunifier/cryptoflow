@@ -1,1 +1,6 @@
-<span>Will have controls for user input</span>
+<div *ngIf="prediction">
+    <span>Tomorrow's prediction: ${{prediction}}</span>
+</div>
+<div *ngIf="!prediction">
+    <span>Loading prediction...</span>
+</div>

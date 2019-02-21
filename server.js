@@ -3,17 +3,16 @@ const app = express();
 const parser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 8080;
+var pythonRouter = require('./server/routes/python.js');
 
 app.use(parser.json());
 app.use(parser.urlencoded({ extended: true }));
 
-app.route("/api/test").get((req, res) => {
-    res.status(200).send("Hello from server!");
-});
+app.use('/python', pythonRouter);
 
 app.use(express.static(path.join(__dirname, 'dist/cryptoflow')));
 
-app.get('/*', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/cryptoflow/index.html'));
 });
 

@@ -1,5 +1,6 @@
 import csv
 import requests
+import json
  
 class DataManager:
     """
@@ -17,3 +18,10 @@ class DataManager:
             for row in reader:
                 data.append(row)
         return data
+    def save_to_json_file(self, data, filepath):
+        with open(filepath, 'w') as my_file:
+            json.dump(data, my_file)
+    def read_from_json_file(self, filepath):
+        with open(filepath, 'r') as my_file:
+            return json.load(my_file)
+        

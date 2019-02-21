@@ -8,19 +8,44 @@ from math import sqrt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
-
+import requests 
 from model import CryptoModel
+from datamanager import DataManager
+import os
 
-my_model = CryptoModel()
-my_model.load()
+def predict():
+    #pull today's opening price 
+    data_manager = DataManager()
 
-#last_prediction = [[0.5604354]]
-last_prediction = [[9998.518]]
+    r = requests.get(url="https://api.coindesk.com/v1/bpi/currentprice.json")
 
-shaped_prediction = np.reshape(last_prediction, (1,1,1))
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    json_file_path = os.path.join(my_path, "./data/current/current.json")
+    #data_manager.save_to_json_file(r.json(), json_file_path)
 
-#print(my_model.summarize())
+    current_data = data_manager.read_from_json_file(json_file_path)
 
-result = my_model.predict(shaped_prediction)
+    price_today = current_data["bpi"]["USD"]["rate_float"]
 
-print(result)
+    #normalize the data
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    today_normalized = scaler.fit_transform(np.reshape(price_today, (-1,1)))
+
+    #print("Today's price is: $%.2f" % (price_today))
+
+    #load the model
+    my_model = CryptoModel()
+    my_model.load()
+
+    today_shaped = np.reshape(today_normalized, (1,1,1))
+
+    result = my_model.predict(today_shaped)
+
+    #revert result to normal scale
+    result_rescaled = scaler.inverse_transform(result)
+
+    print(result_rescaled[0][0])
+
+if __name__ == '__main__':
+    #print("Starting...")
+    predict()

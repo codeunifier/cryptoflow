@@ -1,6 +1,7 @@
 import keras
 import tensorflow as tf
 from graph import plot_losses
+import os
 
 """
 Sources:
@@ -10,8 +11,8 @@ https://stackoverflow.com/questions/48760472/how-to-use-the-keras-model-to-forec
 class CryptoModel:
     __model = None
 
-    def __init__(self):
-        print("Initializing model...")
+    #def __init__(self):
+        #print("Initializing model...")
 
     def create(self, shape):
         print("Creating model...")
@@ -50,7 +51,7 @@ class CryptoModel:
         #return self.__model.fit(train_x, train_y, epochs=100, batch_size=200, validation_split=0.3, verbose=1, shuffle=False)
     
     def predict(self, x):
-        print("Making prediction...")
+        #print("Making prediction...")
         return self.__model.predict(x)
     
     def reset(self):
@@ -58,11 +59,15 @@ class CryptoModel:
 
     def save(self):
         print("Saving model...")
-        self.__model.save("my_model.h5")
+        my_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(my_path, "./data/models/my_model.h5")
+        self.__model.save(file_path)
 
     def load(self):
-        print("Loading model...")
-        self.__model = keras.models.load_model("my_model.h5")
+        #print("Loading model...")
+        my_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(my_path, "./data/models/my_model.h5")
+        self.__model = keras.models.load_model(file_path)
     
     def summarize(self):
         return self.__model.summary()

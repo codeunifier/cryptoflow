@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { GraphComponent } from './graph/graph.component';
 import { PredictionComponent } from './prediction/prediction.component';
 
+import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -14,7 +16,8 @@ import { PredictionComponent } from './prediction/prediction.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
