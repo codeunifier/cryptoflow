@@ -13,6 +13,7 @@ router.get('/prediction', function (req, res) {
         dataStream.push(data);
     });
     pyPredict.stdout.on("end", function (data) {
+        console.log(dataStream);
         var last = dataStream.pop();
         res.json( { "prediction": parseFloat(last) } );
     });
