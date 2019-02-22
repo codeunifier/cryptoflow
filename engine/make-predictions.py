@@ -12,24 +12,23 @@ import requests
 from model import CryptoModel
 from datamanager import DataManager
 import os
+import sys
 
-def predict():
+def predict(historicalData, currentData):
     #pull today's opening price 
-    data_manager = DataManager()
 
-    r = requests.get(url="https://api.coindesk.com/v1/bpi/currentprice.json")
+    #data_manager = DataManager()
 
-    my_path = os.path.abspath(os.path.dirname(__file__))
-    json_file_path = os.path.join(my_path, "./data/current/current.json")
+    #r = requests.get(url="https://api.coindesk.com/v1/bpi/currentprice.json")
+    #my_path = os.path.abspath(os.path.dirname(__file__))
+    #json_file_path = os.path.join(my_path, "./data/current/current.json")
     #data_manager.save_to_json_file(r.json(), json_file_path)
-
-    current_data = data_manager.read_from_json_file(json_file_path)
-
-    price_today = current_data["bpi"]["USD"]["rate_float"]
+    #current_data = data_manager.read_from_json_file(json_file_path)
+    #price_today = current_data["bpi"]["USD"]["rate_float"]
 
     #normalize the data
     scaler = MinMaxScaler(feature_range=(0, 1))
-    today_normalized = scaler.fit_transform(np.reshape(price_today, (-1,1)))
+    today_normalized = scaler.fit_transform(np.reshape(currentData, (-1,1)))
 
     #print("Today's price is: $%.2f" % (price_today))
 
@@ -47,5 +46,4 @@ def predict():
     print(result_rescaled[0][0])
 
 if __name__ == '__main__':
-    #print("Starting...")
-    predict()
+    predict(sys.argv[1], sys.argv[2])

@@ -1,10 +1,35 @@
+@import "../../scss/variables";
+
+.prediction-container {
+    margin-top: 15px;
+}
+
 .button-container {
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     width: 100%;
     height: 50px;
 }
 
 .button-container button {
     width: 100%;
+}
+
+.price-container {
+    width: 40%;
+    height: 30px;
+    font-size: 20px;
+    border-radius: 8px;
+    background-color: lightsalmon;
+    margin-bottom: 20px;
+    padding: 5px;
+}
+
+.loading-container {
+    font-size: 30px;
+    text-align: center;
+    width: 100%;
+    height: 90%;
+    line-height: 400px;
+    font-family: $chewy-font;
 }

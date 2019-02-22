@@ -7,10 +7,12 @@ button {
     background-color: lightskyblue;
     border: none;
     text-decoration: none;
-    cursor: pointer;
     border-radius: 8px;
+    font-family: $chewy-font;
+    font-size: 25px;
 }
 
-button:hover {
+button:hover:enabled {
     background-color: rgb(86, 203, 241);
+    cursor: pointer;
 }

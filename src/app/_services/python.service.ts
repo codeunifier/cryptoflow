@@ -10,7 +10,7 @@ export class PythonService {
 
   constructor(private http: HttpClient) { }
 
-  public getPrediction(): Observable<number> {
-    return this.http.get("/python/prediction").pipe(map(resp => resp["prediction"]));
+  public getPrediction(): Observable<any> {
+    return this.http.get("/python/prediction").pipe(map(resp => resp));
   }
 }

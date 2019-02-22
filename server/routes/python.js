@@ -1,10 +1,51 @@
 var express = require('express')
 var router = express.Router()
+var request = require('request');
 
 const {spawn} = require("child_process");
 
-router.get('/prediction', function (req, res) {
-    var pyPredict = spawn('python', ['engine/make-predictions.py']);
+function formatDateString(date) {
+    let month = date.getMonth() < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+    let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+
+    return date.getFullYear() + "-" + month + "-" + day;
+}
+
+function collectData(req, res, next) {
+    let startDate = new Date();
+    startDate.setDate(startDate.getDate() - 5);
+    let endDate = new Date();
+    endDate.setDate(endDate.getDate() - 1);
+
+    request("https://api.coindesk.com/v1/bpi/historical/close.json?start=" + formatDateString(startDate) + "&end=" + formatDateString(endDate), {json: true}, function (err1, res1, body1) {
+        if (err1) { 
+            res.status(500);
+            res.send("Failed getting historical data");
+        } else if (body1["bpi"] == null) {
+            res.status(500);
+            res.send(body1);
+        } else {
+            request("https://api.coindesk.com/v1/bpi/currentprice.json", {json: true}, function (err2, res2, body2) {
+                if (err2) {
+                    res.status(500);
+                    res.send("Failed getting current price");
+                } else if (body2["bpi"] == null) {
+                    res.status(500);
+                    res.send(body2);
+                } else {
+                    req.historicalData = body1["bpi"];
+                    req.currentData = body2["bpi"]["USD"]["rate_float"];
+                    req.disclaimer = body2["disclaimer"];
+                    next();
+                }
+            });
+        }
+    });
+}
+
+router.get('/prediction', collectData, function (req, res) {
+    //TODO: pass data into the predictions script - I want the JS code to handle grabbing data, not Python
+    var pyPredict = spawn('python', ['engine/make-predictions.py', req.historicalData, req.currentData]);
     pyPredict.stdout.setEncoding("utf8");
 
     var dataStream = [];
@@ -26,9 +67,8 @@ router.get('/prediction', function (req, res) {
             console.log("Python output:");
             console.log(dataStream);
             var last = dataStream.pop();
-            res.json( { "prediction": parseFloat(last) } );
+            res.json( { "prediction": parseFloat(last), "historical": req.historicalData, "current": req.currentData, "disclaimer": req.disclaimer } );
         }
-        
     });
 });
 

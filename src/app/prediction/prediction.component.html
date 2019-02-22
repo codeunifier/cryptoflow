@@ -1,11 +1,18 @@
-<div>
-    <div *ngIf="prediction">
-        <span>Tomorrow's prediction: ${{prediction}}</span>
+<div *ngIf="hasLoaded" class="prediction-container">
+    <div class="price-container">
+        <span>
+            Today's current price: ${{current.toFixed(2)}}
+        </span>
     </div>
-    <div *ngIf="!prediction">
-        <span>Loading prediction...</span>
+    <div class="price-container">
+        <span>
+            Tomorrow's prediction: ${{prediction.toFixed(2)}}
+        </span>
     </div>
-    <div class="button-container">
-        <button class="l-button" (click)="onPredictionRefreshClick()">Refresh Prediction</button>
-    </div>
+</div>
+<div *ngIf="!hasLoaded" class="loading-container">
+    <span>Loading prediction...</span>
+</div>
+<div class="button-container">
+    <button class="l-button" (click)="onPredictionRefreshClick()" [disabled]="!hasLoaded">Refresh Prediction</button>
 </div>
