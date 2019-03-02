@@ -10,7 +10,5 @@
             <app-prediction (predict)="onPrediction($event)" (disclaim)="onDisclaim($event)"></app-prediction>
         </div>
     </div>
-    <div class="disclaimer-container">
-        <span>{{disclaimer}}</span>
-    </div>
+    <app-footer [disclaimer]="disclaimer"></app-footer>
 </div>

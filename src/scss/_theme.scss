@@ -4,12 +4,20 @@
 }
 
 button {
-    background-color: lightskyblue;
+    background-color: $button-background-color;
     border: none;
     text-decoration: none;
     border-radius: 8px;
     font-family: $chewy-font;
     font-size: 25px;
+}
+
+button:enabled {
+    color: black;
+}
+
+button:disabled {
+    color: grey;
 }
 
 button:hover:enabled {

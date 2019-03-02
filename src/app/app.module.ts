@@ -7,12 +7,14 @@ import { GraphComponent } from './graph/graph.component';
 import { PredictionComponent } from './prediction/prediction.component';
 
 import { HttpClientModule } from '@angular/common/http';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GraphComponent,
-    PredictionComponent
+    PredictionComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PythonService } from '../_services/python.service';
 import { Subscription } from 'rxjs';
 import { GraphData } from '../_models/graph-data';
-import { stringify } from '@angular/core/src/util';
 
 @Component({
   selector: 'app-prediction',
@@ -20,6 +19,7 @@ export class PredictionComponent implements OnInit {
   historicalData: number[];
   hasLoaded: boolean = false;
   disclaimer: string;
+  lookback: number = 6; //a different model is needed for each different value for the lookback
 
   constructor(private pyService: PythonService) { }
 
@@ -40,21 +40,24 @@ export class PredictionComponent implements OnInit {
   private makePrediction(): void {
     this.hasLoaded = false;
     this.prediction = null;
-    this.predictionSub = this.pyService.getPrediction().subscribe(p => {
-      this.hasErrored = p == null;
+    this.predictionSub = this.pyService.getPrediction(this.lookback).subscribe(p => {
+      this.hasErrored = p == null || p.prediction == null;
       
-      let ex: GraphData = new GraphData();
+      if (!this.hasErrored) {
+        let ex: GraphData = new GraphData();
 
-      this.prediction = ex.prediction = p.prediction;
-      this.current = ex.current = p.current;
-      ex.historical = new Map<string, number>();
+        this.prediction = ex.prediction = p.prediction;
+        this.current = ex.current = p.current;
+        ex.historical = new Map<string, number>();
 
-      for (var key in p.historical) {
-        ex.historical.set(key, p.historical[key]);
+        for (var key in p.historical) {
+          ex.historical.set(key, p.historical[key]);
+        }
+
+        this.predict.emit(ex);
+        this.disclaim.emit(p.disclaimer);
       }
 
-      this.predict.emit(ex);
-      this.disclaim.emit(p.disclaimer);
       this.hasLoaded = true;
     });
   }

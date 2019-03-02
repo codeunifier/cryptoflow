@@ -57,16 +57,16 @@ class CryptoModel:
     def reset(self):
         self.__model.reset_states()
 
-    def save(self):
+    def save(self, name = "my_model.h5"):
         print("Saving model...")
         my_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(my_path, "./data/models/my_model.h5")
+        file_path = os.path.join(my_path, "./data/models/" + name)
         self.__model.save(file_path)
 
-    def load(self):
+    def load(self, name = "my_model.h5"):
         #print("Loading model...")
         my_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(my_path, "./data/models/my_model.h5")
+        file_path = os.path.join(my_path, "./data/models/" + name)
         self.__model = keras.models.load_model(file_path)
     
     def summarize(self):

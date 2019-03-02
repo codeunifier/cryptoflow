@@ -13,32 +13,31 @@ from model import CryptoModel
 from datamanager import DataManager
 import os
 import sys
+import demjson
 
-def predict(historicalData, currentData):
-    #pull today's opening price 
+def predict(historicalData, lookback):
+    #in javascript, the server tosses today's price at the end of historicalData
+    data = []
+    historicalData = demjson.decode(historicalData)
 
-    #data_manager = DataManager()
+    #convert the historical data object into data array
+    for key in historicalData:
+        data.append(historicalData[key])
 
-    #r = requests.get(url="https://api.coindesk.com/v1/bpi/currentprice.json")
-    #my_path = os.path.abspath(os.path.dirname(__file__))
-    #json_file_path = os.path.join(my_path, "./data/current/current.json")
-    #data_manager.save_to_json_file(r.json(), json_file_path)
-    #current_data = data_manager.read_from_json_file(json_file_path)
-    #price_today = current_data["bpi"]["USD"]["rate_float"]
+    data = data[len(data) - int(lookback):]
 
     #normalize the data
     scaler = MinMaxScaler(feature_range=(0, 1))
-    today_normalized = scaler.fit_transform(np.reshape(currentData, (-1,1)))
-
-    #print("Today's price is: $%.2f" % (price_today))
+    noramlized = scaler.fit_transform(np.reshape(data, (-1,1)))
 
     #load the model
     my_model = CryptoModel()
-    my_model.load()
+    my_model.load("my_model_" + lookback + ".h5")
 
-    today_shaped = np.reshape(today_normalized, (1,1,1))
+    #shaped = np.reshape(noramlized, (1,1,1))
+    shaped = np.reshape(noramlized, (1,1,int(lookback)))
 
-    result = my_model.predict(today_shaped)
+    result = my_model.predict(shaped)
 
     #revert result to normal scale
     result_rescaled = scaler.inverse_transform(result)

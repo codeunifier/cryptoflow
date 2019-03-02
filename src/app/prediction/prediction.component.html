@@ -1,17 +1,34 @@
-<div *ngIf="hasLoaded" class="prediction-container">
+<div *ngIf="hasLoaded && !hasErrored" class="prediction-container">
     <div class="price-container">
-        <span>
-            Today's current price: ${{current.toFixed(2)}}
-        </span>
+        <div class="price-label">
+            <span>
+                Today's current price: 
+            </span>
+        </div>
+        <div class="price">
+            <span>
+                ${{current.toFixed(2)}}
+            </span>
+        </div>
     </div>
     <div class="price-container">
-        <span>
-            Tomorrow's prediction: ${{prediction.toFixed(2)}}
-        </span>
+        <div class="price-label">
+            <span>
+                    Tomorrow's prediction:
+            </span>
+        </div>
+        <div class="price">
+            <span>
+                    ${{prediction.toFixed(2)}}
+            </span>
+        </div>
     </div>
 </div>
 <div *ngIf="!hasLoaded" class="loading-container">
     <span>Loading prediction...</span>
+</div>
+<div *ngIf="hasLoaded && hasErrored" class="error-container">
+    <span>Error loading prediction</span>
 </div>
 <div class="button-container">
     <button class="l-button" (click)="onPredictionRefreshClick()" [disabled]="!hasLoaded">Refresh Prediction</button>

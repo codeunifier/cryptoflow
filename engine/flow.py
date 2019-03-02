@@ -110,7 +110,7 @@ print("Train size: %d" % (len(train_data)))
 print("Test size: %d" % (len(test_data)))
 
 #create the dataset
-look_back = 1
+look_back = 6
 train_x, train_y = create_dataset(train_data, look_back)
 test_x, test_y = create_dataset(test_data, look_back)
 
@@ -140,77 +140,52 @@ val_result = pd.DataFrame()
 acc_result = pd.DataFrame()
 val_acc_result = pd.DataFrame()
 
-# for i in range(0, max_attempts):
-print("Round %d/%d" % (round_num, max_attempts))
+for i in range(0, max_attempts):
+    print("Round %d/%d" % (round_num, max_attempts))
 
-#create the model
-my_model = CryptoModel()
-my_model.create(train_x.shape)
+    #create the model
+    my_model = CryptoModel()
+    my_model.create(train_x.shape)
 
-#train the model
-history = my_model.train(train_x, train_y, test_x, test_y)
+    #train the model
+    history = my_model.train(train_x, train_y, test_x, test_y)
 
-#make prediction using test_x and plotting line graph against test_y
-prediction_y = my_model.predict(test_x)
+    #make prediction using test_x and plotting line graph against test_y
+    prediction_y = my_model.predict(test_x)
 
-#scaler inverse y back to normal value
-prediction = prediction_y
+    #scaler inverse y back to normal value
+    prediction = prediction_y
 
-rmse = sqrt(mean_squared_error(final_actual, prediction))
-mae = sqrt(mean_absolute_error(final_actual, prediction))
-print("Root Mean Squared Error: %.3f" % (rmse))
-print("Mean Absolute Error: %.3f" % (mae))
-print()
+    rmse = sqrt(mean_squared_error(final_actual, prediction))
+    mae = sqrt(mean_absolute_error(final_actual, prediction))
+    print("Root Mean Squared Error: %.3f" % (rmse))
+    print("Mean Absolute Error: %.3f" % (mae))
+    print()
 
-#store the training history data
-# loss_result[str(i)] = history.history["loss"]
-# val_result[str(i)] = history.history["val_loss"]
-# acc_result[str(i)] = history.history["acc"]
-# val_acc_result[str(i)] = history.history["val_acc"]
+    #store the training history data
+    loss_result[str(i)] = history.history["loss"]
+    val_result[str(i)] = history.history["val_loss"]
+    acc_result[str(i)] = history.history["acc"]
+    val_acc_result[str(i)] = history.history["val_acc"]
 
-if rmse < best_rmse:
-    best_rmse = rmse
-    best_prediction = prediction
-    best_prediction_transformed = scaler.inverse_transform(prediction_y.reshape(-1,1))
-    best_model = my_model
+    if rmse < best_rmse:
+        best_rmse = rmse
+        best_prediction = prediction
+        best_prediction_transformed = scaler.inverse_transform(prediction_y.reshape(-1,1))
+        best_model = my_model
 
-round_num += 1
+    round_num += 1
 
 #plot with real values
-#graph_predictions_against_actual(best_prediction_transformed, final_actual)
+graph_predictions_against_actual(best_prediction_transformed, final_actual)
 
 print("\nBest RMSE: %.3f\n" % (best_rmse))
 
-#graph_loss_against_validation(loss_result, val_result)
+graph_loss_against_validation(loss_result, val_result)
 
-#graph_accuracy_against_validation(acc_result, val_acc_result)
+graph_accuracy_against_validation(acc_result, val_acc_result)
 
 #save the best model
-best_model.save()
+best_model.save("my_model_6.h5")
 
-print(best_prediction[-1:])
-
-#after finding the best predictions, predict the future with that model
-#start with the last prediction and move forward
-#TODO: this is just creating a parabola rather than actual predictions
-# future = []
-# current_step = best_prediction[-1:]
-# current_step = np.reshape(current_step, (1,1,1))
-# for i in range(7):
-#     current_step = best_model.predict(current_step)
-#     future.append(current_step)
-#     current_step = np.reshape(current_step, (1,1,1))
-# future_actual = scaler.inverse_transform(np.reshape(future, (-1,1)))
-# graph_future_predictions(future_actual)
-
-#keep it simple - just predict the next day's price - although this is technically predicting today's price...
-#TODO: pull today's opening price and use that to predict tomorrow's closing
-price_yesterday = best_prediction[-1:]
-price_yesterday = np.reshape(price_yesterday, (1,1,1))
-price_tomorrow = best_model.predict(price_yesterday)
-price_tomorrow_actual = scaler.inverse_transform(np.reshape(price_tomorrow, (-1,1)))
-
-best_model.reset()
-
-print("Tomorrow's price will be $%.2f" % (price_tomorrow_actual[0][0]))
 print("Finished.")
