@@ -45,7 +45,8 @@ function collectData(req, res, next) {
 
 router.get('/prediction/:lookback', collectData, function (req, res) {
     //TODO: update this to not hard-code today's date
-    req.historicalData['2019-03-02'] = req.currentData;
+    var today = new Date();
+    req.historicalData[formatDateString(today)] = req.currentData;
 
     var pyPredict = spawn('python', ['engine/make-predictions.py', JSON.stringify(req.historicalData), req.params.lookback]);
     pyPredict.stdout.setEncoding("utf8");

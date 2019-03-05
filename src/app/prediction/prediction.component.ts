@@ -20,6 +20,8 @@ export class PredictionComponent implements OnInit {
   hasLoaded: boolean = false;
   disclaimer: string;
   lookback: number = 6; //a different model is needed for each different value for the lookback
+  growth: number = 0;
+  growthPercent: number = 0;
 
   constructor(private pyService: PythonService) { }
 
@@ -37,6 +39,26 @@ export class PredictionComponent implements OnInit {
     this.makePrediction();
   }
 
+  getGrowthClass(): string {
+    if (this.growth == null) {
+      return "";
+    } else if (this.growth < 0) {
+      return "neg-growth";
+    } else if (this.growth > 0) {
+      return "pos-growth";
+    }
+  }
+
+  getSign(): string {
+    if (this.growth == null) {
+      return "";
+    } else if (this.growth < 0) {
+      return "-";
+    } else if (this.growth > 0) {
+      return "+";
+    }
+  }
+
   private makePrediction(): void {
     this.hasLoaded = false;
     this.prediction = null;
@@ -48,6 +70,8 @@ export class PredictionComponent implements OnInit {
 
         this.prediction = ex.prediction = p.prediction;
         this.current = ex.current = p.current;
+        this.growth = this.prediction - this.current;
+        this.growthPercent = ((this.prediction - this.current) / this.current) * 100;
         ex.historical = new Map<string, number>();
 
         for (var key in p.historical) {
