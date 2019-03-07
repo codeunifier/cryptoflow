@@ -8,13 +8,15 @@ import { PredictionComponent } from './prediction/prediction.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './footer/footer.component';
+import { TimeframeComponent } from './timeframe/timeframe.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GraphComponent,
     PredictionComponent,
-    FooterComponent
+    FooterComponent,
+    TimeframeComponent
   ],
   imports: [
     BrowserModule,

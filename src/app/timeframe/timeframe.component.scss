@@ -1,0 +1,20 @@
+@import "../../scss/variables";
+
+.timeframe-container {
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+}
+
+.b-timeframe {
+    display: inline-block;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-family: $chewy-font;
+    height: 50px;
+    width: 50px;
+}
+
+.b-timeframe.active {
+    background-color: lightgrey;
+}

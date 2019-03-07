@@ -4,10 +4,10 @@
     </div>
     <div class="app-body">
         <div class="l-float-left l-width-half app-cont">
-            <app-graph [data]="cryptoData"></app-graph>
+            <app-graph></app-graph>
         </div>
         <div class="l-float-right l-width-half app-cont">
-            <app-prediction (predict)="onPrediction($event)" (disclaim)="onDisclaim($event)"></app-prediction>
+            <app-prediction></app-prediction>
         </div>
     </div>
     <app-footer [disclaimer]="disclaimer" class="footer noselect"></app-footer>

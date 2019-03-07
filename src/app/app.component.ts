@@ -8,14 +8,4 @@ import { GraphData } from './_models/graph-data';
 })
 export class AppComponent {
   title = 'cryptoflow';
-  disclaimer: string;
-  cryptoData: GraphData;
-
-  onPrediction(data: GraphData) {
-    this.cryptoData = data;
-  }
-
-  onDisclaim(disclaimer: string) {
-    this.disclaimer = "Disclaimer: " + disclaimer;
-  }
 }

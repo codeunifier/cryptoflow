@@ -1,0 +1,14 @@
+<div class="timeframe-container noselect">
+  <div class="cf-label b-timeframe" (click)="onTimeframeClick(1)" [ngClass]="getActiveClass(1)">
+    <label for="btnWeek" >1w</label>
+    <button id="btnWeek" class="hidden"></button>
+  </div>
+  <div class="cf-label b-timeframe" (click)="onTimeframeClick(2)" [ngClass]="getActiveClass(2)">
+    <label for="btnMonth">1m</label>
+    <button id="btnMonth" class="hidden"></button>
+  </div>
+  <div class="cf-label b-timeframe" (click)="onTimeframeClick(3)" [ngClass]="getActiveClass(3)">
+    <label for="btnThreeMonth">3m</label>
+    <button id="btnThreeMonth" class="hidden"></button>
+  </div>
+</div>

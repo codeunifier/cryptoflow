@@ -1,11 +1,11 @@
 <div class="prediction-container noselect">
-    <div *ngIf="hasLoaded && !hasErrored" class="values-container">
+    <div *ngIf="hasLoaded() && !hasErrored" class="values-container">
         <div class="value-container">
             <div>
                 <span>Today's current price: </span>
             </div>
             <div class="l-float-right">
-                <span>${{current.toFixed(2)}}</span>
+                <span>${{prediction.current.toFixed(2)}}</span>
             </div>
         </div>
         <div class="value-container">
@@ -13,22 +13,22 @@
                 <span>Tomorrow's prediction:</span>
             </div>
             <div class="l-float-right">
-                <span>${{prediction.toFixed(2)}}</span>
+                <span>${{prediction.prediction.toFixed(2)}}</span>
             </div>
         </div>
         <div class="value-container" [ngClass]="getGrowthClass()">
             <div>
-                <span>{{getSign()}}${{growth.toFixed(2)}}</span>
+                <span>{{getSign()}}${{getGrowth()}}</span>
             </div>
             <div class="l-float-right">
-                <span>{{getSign()}}{{growthPercent.toFixed(2)}}%</span>
+                <span>{{getSign()}}{{getGrowthPercent()}}%</span>
             </div>
         </div>
     </div>
-    <div *ngIf="!hasLoaded" class="loading-container">
+    <div *ngIf="!hasLoaded()" class="loading-container">
         <span>Loading prediction...</span>
     </div>
-    <div *ngIf="hasLoaded && hasErrored" class="error-container">
+    <div *ngIf="hasLoaded() && hasErrored" class="error-container">
         <span>Error loading prediction</span>
     </div>
     <div class="button-container">

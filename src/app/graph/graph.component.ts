@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, SimpleChange, SimpleChanges } from '@angular/core';
 import { Chart } from 'chart.js';
 import { GraphData } from '../_models/graph-data';
+import { PredictionService } from '../_services/prediction.service';
+import { PredictionStates } from '../_models/prediction-states';
+import { Prediction } from '../_models/prediction';
 
 @Component({
   selector: 'app-graph',
@@ -8,11 +11,34 @@ import { GraphData } from '../_models/graph-data';
   styleUrls: ['./graph.component.scss']
 })
 export class GraphComponent implements OnInit {
-  @Input() data: GraphData;
   days: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   graph: Chart;
+  pState: PredictionStates = null;
+  prediction: Prediction;
+  data: GraphData;
 
-  constructor() { }
+  constructor(private predictionService: PredictionService) {
+    this.predictionService.currentStateChange.subscribe((value) => {
+        if (value == PredictionStates.Finished) {
+            this.prediction = this.predictionService.getPrediction();
+
+            let ex: GraphData = new GraphData();
+            ex.current = this.prediction.current;
+            ex.prediction = this.prediction.prediction;
+
+            ex.historical = new Map<string, number>();
+
+            for (var key in this.prediction.historical) {
+                ex.historical.set(key, this.prediction.historical[key]);
+            }
+
+            this.data = ex;
+            this.updateGraph();
+        }
+        
+        this.pState = value;
+    });
+   }
 
   ngOnInit() {
     var ctx = document.getElementById("canvas");
@@ -31,12 +57,6 @@ export class GraphComponent implements OnInit {
             }
         }
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.data) {
-        this.updateGraph();
-    }
   }
 
     private updateGraph(): void {
@@ -61,14 +81,14 @@ export class GraphComponent implements OnInit {
 
             // labels.push(this.days[new Date().getDay()]);
             labels.push("Today");
-            prices.push(this.data.current);
+            prices.push(this.prediction.current);
 
             // labels.push(this.days[new Date().getDay() + 1]);
             labels.push("Tomorrow");
-            prices.push(this.data.prediction);
+            prices.push(this.prediction.prediction);
 
             let pricesWithToday = Object.assign([], prices);
-            pricesWithToday.push(this.data.current);
+            pricesWithToday.push(this.prediction.current);
 
             this.graph = new Chart(ctx, {
                 type: 'line',
