@@ -10,6 +10,7 @@ import { PredictionStates } from '../_models/prediction-states';
 export class PredictionService {
   currentStateChange: BehaviorSubject<PredictionStates> = new BehaviorSubject(null);
   timeframeId: number = 0;
+  activeCall: boolean = false;
 
   private currentState: PredictionStates;
   private prediction: Prediction;
@@ -40,14 +41,19 @@ export class PredictionService {
   }
 
   private makePrediction(): void {
-    this.prediction = null;
-    this.pyService.getPrediction(this.timeframeId).subscribe(p => {
-      if (p == null || p.prediction == null) {
-        this.currentStateChange.next(PredictionStates.Errored);
-      } else {
-        this.prediction = p;
-        this.currentStateChange.next(PredictionStates.Finished);
-      }
-    });
+    //add some protection so you can't spam a bunch of calls
+    if (!this.activeCall) {
+      this.prediction = null;
+      this.activeCall = true;
+      this.pyService.getPrediction(this.timeframeId).subscribe(p => {
+        this.activeCall = false;
+        if (p == null || p.prediction == null) {
+          this.currentStateChange.next(PredictionStates.Errored);
+        } else {
+          this.prediction = p;
+          this.currentStateChange.next(PredictionStates.Finished);
+        }
+      });
+    }
   }
 }

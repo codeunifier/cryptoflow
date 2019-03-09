@@ -15,7 +15,8 @@ export class TimeframeComponent implements OnInit {
     this.activeId = 0;
   }
 
-  onTimeframeClick(id: number): void {
+  onTimeframeClick(id: number, event: any = null): void {
+    console.log(event);
     this.activeId = id;
     this.predictionService.newPrediction(id);
   }

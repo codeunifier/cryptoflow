@@ -23,6 +23,8 @@ export class PredictionComponent implements OnInit {
         this.prediction = this.predictionService.getPrediction();
         this.growth = this.prediction.prediction - this.prediction.current;
         this.growthPercent = ((this.prediction.prediction - this.prediction.current) / this.prediction.current) * 100;
+      } else if (value == PredictionStates.Errored) {
+        this.prediction = this.growth = this.growthPercent = null;
       }
 
       this.pState = value;
@@ -69,5 +71,9 @@ export class PredictionComponent implements OnInit {
   hasLoaded(): boolean {
     return this.pState == PredictionStates.Finished 
           || this.pState == PredictionStates.Errored;
+  }
+
+  hasErrored(): boolean {
+    return this.pState == PredictionStates.Errored;
   }
 }

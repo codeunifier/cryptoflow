@@ -1,5 +1,5 @@
 <div class="timeframe-container noselect">
-  <div class="cf-label b-timeframe" (click)="onTimeframeClick(0)" [ngClass]="getActiveClass(0)">
+  <div class="cf-label b-timeframe" (click)="onTimeframeClick(0, $event)" [ngClass]="getActiveClass(0)">
     <label for="btnWeek" >1w</label>
     <button id="btnWeek" class="hidden"></button>
   </div>

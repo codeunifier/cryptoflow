@@ -26,6 +26,8 @@ from sklearn.metrics import mean_absolute_error
 from model import CryptoModel
 from graph import * 
 
+look_back = 29
+
 def create_dataset(dataset, look_back = 1):
     #function taken from https://activewizards.com/blog/bitcoin-price-forecasting-with-deep-learning-algorithms/
     #also found here: https://www.kaggle.com/ternaryrealm/lstm-time-series-explorations-with-keras
@@ -110,7 +112,6 @@ print("Train size: %d" % (len(train_data)))
 print("Test size: %d" % (len(test_data)))
 
 #create the dataset
-look_back = 6
 train_x, train_y = create_dataset(train_data, look_back)
 test_x, test_y = create_dataset(test_data, look_back)
 
@@ -186,6 +187,6 @@ graph_loss_against_validation(loss_result, val_result)
 graph_accuracy_against_validation(acc_result, val_acc_result)
 
 #save the best model
-best_model.save("my_model_6.h5")
+#best_model.save("my_model_%d.h5" % look_back)
 
 print("Finished.")
