@@ -7,10 +7,11 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PythonService {
+  timeframeLookbacks: any = [6, 29, 89]; //week, one month, three months
 
   constructor(private http: HttpClient) { }
 
-  public getPrediction(lookback: number): Observable<any> {
-    return this.http.get("/python/prediction/" + lookback).pipe(map(resp => resp));
+  public getPrediction(timeframeId: number): Observable<any> {
+    return this.http.get("/python/prediction/" + this.timeframeLookbacks[timeframeId]).pipe(map(resp => resp));
   }
 }

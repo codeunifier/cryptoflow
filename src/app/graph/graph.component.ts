@@ -11,7 +11,6 @@ import { Prediction } from '../_models/prediction';
   styleUrls: ['./graph.component.scss']
 })
 export class GraphComponent implements OnInit {
-  days: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   graph: Chart;
   pState: PredictionStates = null;
   prediction: Prediction;
@@ -62,42 +61,19 @@ export class GraphComponent implements OnInit {
     private updateGraph(): void {
         if (this.data != null) {
             var ctx = document.getElementById("canvas");
-            let labels: string[] = [];
-            let prices: number[] = [];
+            this.createGraphLabelsAndPrices();
 
-            let _this = this;
-
-            this.data.historical.forEach(function (value, key) {
-                //there is a bug here - the date format 2019-02-17 is creating a date for Feb. 16 2019
-                let index = -1;
-                if (new Date(key).getDay() == 6) {
-                    index = 0;
-                } else {
-                    index = new Date(key).getDay() + 1;
-                }
-                labels.push(_this.days[index]);
-                prices.push(value);
-            });
-
-            // labels.push(this.days[new Date().getDay()]);
-            labels.push("Today");
-            prices.push(this.prediction.current);
-
-            // labels.push(this.days[new Date().getDay() + 1]);
-            labels.push("Tomorrow");
-            prices.push(this.prediction.prediction);
-
-            let pricesWithToday = Object.assign([], prices);
+            let pricesWithToday = Object.assign([], this.data.prices);
             pricesWithToday.push(this.prediction.current);
 
             this.graph = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: this.data.labels,
                     datasets: [
                         {
                             label: 'historical price',
-                            data: prices,
+                            data: this.data.prices,
                             fill: false,
                             pointRadius: 4,
                             borderColor: "#80b6f4",
@@ -109,5 +85,44 @@ export class GraphComponent implements OnInit {
                 }
             });
         }
+    }
+
+    private createGraphLabelsAndPrices() {
+        let _this = this;
+        this.data.labels = [];
+        this.data.prices = [];
+
+        //TODO: finish this and add models for a lookback of 29 and 69
+
+        switch(this.predictionService.timeframeId) {
+            case 0: //week
+                this.data.historical.forEach(function (value, key) {
+                    let weekday: string = new Date(key).toLocaleDateString('en-US', {weekday: 'long'});
+        
+                    _this.data.labels.push(weekday);
+                    _this.data.prices.push(value);
+                });
+            break;
+            case 1: //1 month
+                let keys = this.data.historical.keys;
+                for (var i = 0; i < this.data.historical.size; i++) {
+                    if (i % 4 == 0) {
+                        let weekday: string = new Date(keys[i]).toLocaleDateString('en-US', {weekday: 'long'});
+                        this.data.labels.push(weekday);
+                        this.data.prices.push(this.data.historical[keys[i]]);
+                    }
+                }
+            break;
+            case 2: //3 months
+
+            break;
+        }
+        
+
+        this.data.labels.push("Today");
+        this.data.prices.push(this.prediction.current);
+
+        this.data.labels.push("Tomorrow");
+        this.data.prices.push(this.prediction.prediction);
     }
 }

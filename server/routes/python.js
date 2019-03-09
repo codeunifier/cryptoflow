@@ -13,7 +13,7 @@ function formatDateString(date) {
 
 function collectData(req, res, next) {
     let startDate = new Date();
-    startDate.setDate(startDate.getDate() - 5);
+    startDate.setDate(startDate.getDate() - req.params.lookback + 1);
     let endDate = new Date();
     endDate.setDate(endDate.getDate() - 1);
 

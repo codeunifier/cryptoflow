@@ -12,7 +12,7 @@ export class TimeframeComponent implements OnInit {
   constructor(private predictionService: PredictionService) { }
 
   ngOnInit() {
-    this.activeId = 1;
+    this.activeId = 0;
   }
 
   onTimeframeClick(id: number): void {

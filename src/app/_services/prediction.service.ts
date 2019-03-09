@@ -9,8 +9,7 @@ import { PredictionStates } from '../_models/prediction-states';
 })
 export class PredictionService {
   currentStateChange: BehaviorSubject<PredictionStates> = new BehaviorSubject(null);
-  lookback: number = 6; //a different model is needed for each different value for the lookback
-  timeframeId: number = 1;
+  timeframeId: number = 0;
 
   private currentState: PredictionStates;
   private prediction: Prediction;
@@ -21,7 +20,7 @@ export class PredictionService {
     });
   }
 
-  newPrediction(tfId: number = 1): void {
+  newPrediction(tfId: number = 0): void {
     this.currentStateChange.next(PredictionStates.Loading);
     this.timeframeId = tfId;
     this.makePrediction();
@@ -42,7 +41,7 @@ export class PredictionService {
 
   private makePrediction(): void {
     this.prediction = null;
-    this.pyService.getPrediction(this.lookback).subscribe(p => {
+    this.pyService.getPrediction(this.timeframeId).subscribe(p => {
       if (p == null || p.prediction == null) {
         this.currentStateChange.next(PredictionStates.Errored);
       } else {
