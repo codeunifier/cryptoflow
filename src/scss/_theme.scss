@@ -11,24 +11,3 @@ button {
     font-family: $chewy-font;
     font-size: 25px;
 }
-
-button:enabled {
-    color: black;
-}
-
-button:disabled {
-    color: silver;
-}
-
-button:hover:enabled {
-    background-color: rgb(86, 203, 241);
-    cursor: pointer;
-}
-
-.cf-label {
-    cursor: pointer;
-}
-
-.cf-label label {
-    cursor: pointer;
-}

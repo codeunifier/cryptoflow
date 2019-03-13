@@ -1,0 +1,25 @@
+.disabled-label {
+    opacity: .5;
+    cursor: default;
+}
+
+button:enabled {
+    color: black;
+}
+
+button:disabled {
+    color: silver;
+}
+
+button:hover:enabled {
+    background-color: rgb(86, 203, 241);
+    cursor: pointer;
+}
+
+.cf-label:not(.disabled) {
+    cursor: pointer;
+}
+
+.cf-label label:not(.disabled-label) {
+    cursor: pointer;
+}

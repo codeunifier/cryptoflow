@@ -73,16 +73,7 @@ export class GraphComponent implements OnInit {
                                 pointBackgroundColor:"#f45c42",
                             }
                         ],
-                    },
-                    // options: {
-                    //     scales: {                            
-                    //         xAxes: [{
-                    //             ticks: { 
-                    //                 fontColor: "#FF0000"
-                    //             }
-                    //         }]
-                    //     }
-                    // }
+                    }
                 });
             } else {
                 this.graph = this.createBlankGraph(ctx);

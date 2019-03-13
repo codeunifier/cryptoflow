@@ -1,14 +1,14 @@
 <div class="timeframe-container noselect">
-  <div class="cf-label b-timeframe" (click)="onTimeframeClick(0, $event)" [ngClass]="getActiveClass(0)">
-    <label for="btnWeek" >1w</label>
+  <div class="cf-label b-timeframe" (click)="onTimeframeClick(0, $event)" [ngClass]="{ 'active': isActive(0), 'disabled': isLoading() }">
+    <label for="btnWeek" [ngClass]="{ 'disabled-label': isLoading() }">1w</label>
     <button id="btnWeek" class="hidden"></button>
   </div>
-  <div class="cf-label b-timeframe" (click)="onTimeframeClick(1)" [ngClass]="getActiveClass(1)">
-    <label for="btnMonth">1m</label>
+  <div class="cf-label b-timeframe" (click)="onTimeframeClick(1)" [ngClass]="{ 'active': isActive(1), 'disabled': isLoading() }">
+    <label for="btnMonth" [ngClass]="{ 'disabled-label': isLoading() }">1m</label>
     <button id="btnMonth" class="hidden"></button>
   </div>
-  <div class="cf-label b-timeframe" (click)="onTimeframeClick(2)" [ngClass]="getActiveClass(2)">
-    <label for="btnThreeMonth">3m</label>
+  <div class="cf-label b-timeframe" (click)="onTimeframeClick(2)" [ngClass]="{ 'active': isActive(2), 'disabled': isLoading() }">
+    <label for="btnThreeMonth" [ngClass]="{ 'disabled-label': isLoading() }">3m</label>
     <button id="btnThreeMonth" class="hidden"></button>
   </div>
 </div>

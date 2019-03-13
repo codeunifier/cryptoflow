@@ -44,7 +44,6 @@ function collectData(req, res, next) {
 }
 
 router.get('/prediction/:lookback', collectData, function (req, res) {
-    //TODO: update this to not hard-code today's date
     var today = new Date();
     req.historicalData[formatDateString(today)] = req.currentData;
 
