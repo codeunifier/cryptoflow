@@ -14,6 +14,7 @@ export class PredictionService {
 
   private currentState: PredictionStates;
   private prediction: Prediction;
+  private disclaimer: string;
 
   constructor(private pyService: PythonService) {
     this.currentStateChange.subscribe((value) => {
@@ -40,6 +41,14 @@ export class PredictionService {
     }
   }
 
+  getDisclaimer(): string {
+    if (this.currentState == PredictionStates.Finished) {
+      return this.disclaimer;
+    } else {
+      return null;
+    }
+  }
+
   private makePrediction(): void {
     //add some protection so you can't spam a bunch of calls
     if (!this.activeCall) {
@@ -51,6 +60,8 @@ export class PredictionService {
           this.currentStateChange.next(PredictionStates.Errored);
         } else {
           this.prediction = p;
+          //this probably should be passed down from the server call, but meh
+          this.disclaimer = "Disclaimer: This data was produced from the CoinDesk Bitcoin Price Index. BPI value data returned as USD.";
           this.currentStateChange.next(PredictionStates.Finished);
         }
       });

@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { PredictionService } from '../_services/prediction.service';
+import { PredictionStates } from '../_models/prediction-states';
 
 @Component({
   selector: 'app-footer',
@@ -6,9 +8,15 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-  @Input() disclaimer:string;
+  disclaimer: string;
 
-  constructor() { }
+  constructor(private predictionService: PredictionService) {
+    this.predictionService.currentStateChange.subscribe((value) => {
+      if (value == PredictionStates.Finished) {
+        this.disclaimer = this.predictionService.getDisclaimer();
+      }
+    });
+  }
 
   ngOnInit() {
   }

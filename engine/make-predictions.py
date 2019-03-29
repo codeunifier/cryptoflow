@@ -15,7 +15,7 @@ import os
 import sys
 import demjson
 
-def predict(historicalData, lookback):
+def predict(historicalData, timeframeId):
     #in javascript, the server tosses today's price at the end of historicalData
     data = []
     historicalData = demjson.decode(historicalData)
@@ -24,7 +24,16 @@ def predict(historicalData, lookback):
     for key in historicalData:
         data.append(historicalData[key])
 
-    data = data[len(data) - int(lookback):]
+    #if timeframeId == 0: #use all of the data
+    if timeframeId == "1": #get 6 points at increments of 5
+        data = data[::5]
+    elif timeframeId == "2": #get 6 points at increments of 15
+        data = data[::15]
+
+    if len(data) is not 6:
+        raise Exception('length of data is incorrect: %d' % len(data))
+    
+    #data = data[len(data) - int(lookback):]
 
     #normalize the data
     scaler = MinMaxScaler(feature_range=(0, 1))
@@ -32,10 +41,11 @@ def predict(historicalData, lookback):
 
     #load the model
     my_model = CryptoModel()
-    my_model.load("my_model_" + lookback + ".h5")
+    #my_model.load("my_model_" + lookback + ".h5")
+    my_model.load("my_model_6.h5")
 
     #shaped = np.reshape(noramlized, (1,1,1))
-    shaped = np.reshape(noramlized, (1,1,int(lookback)))
+    shaped = np.reshape(noramlized, (1,1,6))
 
     result = my_model.predict(shaped)
 

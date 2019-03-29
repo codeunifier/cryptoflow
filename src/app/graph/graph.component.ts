@@ -5,47 +5,47 @@ import { PredictionService } from '../_services/prediction.service';
 import { PredictionStates } from '../_models/prediction-states';
 
 @Component({
-  selector: 'app-graph',
-  templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.scss']
+    selector: 'app-graph',
+    templateUrl: './graph.component.html',
+    styleUrls: ['./graph.component.scss']
 })
 export class GraphComponent implements OnInit {
-  graph: Chart;
-  pState: PredictionStates = null;
-  data: GraphData;
+    graph: Chart;
+    pState: PredictionStates = null;
+    data: GraphData;
 
-  constructor(private predictionService: PredictionService) {
-    this.predictionService.currentStateChange.subscribe((value) => {
-        if (value == PredictionStates.Finished) {
-            let prediction = this.predictionService.getPrediction();
+    constructor(private predictionService: PredictionService) {
+        this.predictionService.currentStateChange.subscribe((value) => {
+            if (value == PredictionStates.Finished) {
+                let prediction = this.predictionService.getPrediction();
 
-            let ex: GraphData = new GraphData();
-            ex.current = prediction.current;
-            ex.prediction = prediction.prediction;
+                let ex: GraphData = new GraphData();
+                ex.current = prediction.current;
+                ex.prediction = prediction.prediction;
 
-            ex.historical = new Map<string, number>();
+                ex.historical = new Map<string, number>();
 
-            for (var key in prediction.historical) {
-                ex.historical.set(key, prediction.historical[key]);
+                for (var key in prediction.historical) {
+                    ex.historical.set(key, prediction.historical[key]);
+                }
+
+                this.data = ex;
+            } else {
+                this.data = null;
             }
-
-            this.data = ex;
-        } else {
-            this.data = null;
-        }
-        
-        this.updateGraph();
-        this.pState = value;
-    });
-   }
-
-  ngOnInit() {
-    var ctx = document.getElementById("canvas");
-
-    if (ctx) {
-        this.graph = this.createBlankGraph(ctx);
+            
+            this.updateGraph();
+            this.pState = value;
+        });
     }
-  }
+
+    ngOnInit() {
+        var ctx = document.getElementById("canvas");
+
+        if (ctx) {
+            this.graph = this.createBlankGraph(ctx);
+        }
+    }
 
     private updateGraph(): void {
         var ctx = document.getElementById("canvas");
@@ -103,18 +103,23 @@ export class GraphComponent implements OnInit {
         let _this = this;
         this.data.labels = [];
         this.data.prices = [];
-
-        //TODO: finish this and add models for a lookback of 29 and 69
+        let count: number = 0;
+        let max: number = this.data.historical.size;
+        let newHistorical: Map<string, number> = new Map<string, number>();
 
         switch(this.predictionService.timeframeId) {
-            case 0: //week
+            case 0: //1 week
+                //we don't want to display the first historical date
+                this.data.historical.delete(this.data.historical.keys().next().value);
+
+                //we want to go 5 days back
                 this.data.historical.forEach(function (value, key) {
                     let weekday: string = new Date(key).toLocaleDateString('en-US', {weekday: 'long'});
         
                     _this.data.labels.push(weekday);
                     _this.data.prices.push(value);
                 });
-
+        
                 this.data.labels.push("Today");
                 this.data.prices.push(this.data.current);
 
@@ -122,38 +127,56 @@ export class GraphComponent implements OnInit {
                 this.data.prices.push(this.data.prediction);
             break;
             case 1: //1 month
-                let idx: number = 0;
-                this.data.historical.forEach((value, key) => {
-                    if ((idx - 1) % 4 == 0) {
-                        // let weekday: string = new Date(key).toLocaleDateString('en-US', {weekday: 'long'});
-                        let dateString: string = new Date(key).toLocaleDateString('en-US');
-                        this.data.labels.push(dateString);
-                        this.data.prices.push(value);
+                this.data.historical.forEach(function (value, key) {
+                    count++;
+                    if (max - count < 26) {
+                        newHistorical.set(key, value);
                     }
-
-                    idx++;
                 });
 
-                let date: Date = new Date();
-                this.data.labels.push(date.toLocaleDateString('en-US'));
-                this.data.prices.push(this.data.current);
-
-                date.setDate(date.getDate() + 4);
-
-                this.data.labels.push(date.toLocaleDateString('en-US'));
-                this.data.prices.push(this.data.prediction);
-                // let keys = this.data.historical.keys;
-                // for (var i = 0; i < this.data.historical.size; i++) {
-                //     if (i % 4 == 0) {
-                //         let weekday: string = new Date(keys[i]).toLocaleDateString('en-US', {weekday: 'long'});
-                //         this.data.labels.push(weekday);
-                //         this.data.prices.push(this.data.historical[keys[i]]);
-                //     }
-                // }
+                this.data.historical = newHistorical;
+                this.setLabelsAndPricesForData(3);
             break;
             case 2: //3 months
+                this.data.historical.forEach(function (value, key) {
+                    count++;
+                    if (max - count < 84) {
+                        newHistorical.set(key, value);
+                    }
+                });
 
+                this.data.historical = newHistorical;
+                this.setLabelsAndPricesForData(7);
             break;
         }        
+    }
+
+    private setLabelsAndPricesForData(increment: number): void {
+        let _this = this;
+        let count: number = 0;
+        let date: Date = new Date();
+
+        this.data.historical.forEach(function (value, key) {
+            if (count % increment == 0) {
+                date = new Date(key);
+                _this.data.labels.push(date.getDate() + " " + _this.getShortMonthName(date.getMonth()) + ".");
+                _this.data.prices.push(value);
+            }
+            count++;
+        });
+
+        this.data.labels.push("Today");
+        this.data.prices.push(this.data.current);
+
+        date = new Date();
+        date.setDate(date.getDate() + increment);
+
+        this.data.labels.push(date.getDate() + " " + this.getShortMonthName(date.getMonth()) + ".");
+        this.data.prices.push(this.data.prediction);
+    }
+
+    private getShortMonthName(idx: number): string {
+        let months: string[] = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        return months[idx];
     }
 }

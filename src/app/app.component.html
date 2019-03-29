@@ -3,12 +3,17 @@
         <span>Cryptoflow</span>
     </div>
     <div class="app-body">
-        <div class="l-float-left l-width-half app-cont">
-            <app-graph></app-graph>
+        <div class="app-cont">
+            <div class="l-float-left l-width-half">
+                <app-graph></app-graph>
+            </div>
+            <div class="l-float-right l-width-half">
+                <app-prediction></app-prediction>
+            </div>
         </div>
-        <div class="l-float-right l-width-half app-cont">
-            <app-prediction></app-prediction>
+        <div>
+
         </div>
     </div>
-    <app-footer [disclaimer]="disclaimer" class="footer noselect"></app-footer>
+    <app-footer class="footer noselect"></app-footer>
 </div>

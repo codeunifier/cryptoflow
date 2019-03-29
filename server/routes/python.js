@@ -13,10 +13,28 @@ function formatDateString(date) {
 
 function collectData(req, res, next) {
     let startDate = new Date();
-    startDate.setDate(startDate.getDate() - req.params.lookback + 1);
     let endDate = new Date();
-    endDate.setDate(endDate.getDate() - 1);
 
+    switch (req.params.timeframeId) {
+        case "0": //one week, increments of 1 day
+            startDate.setDate(startDate.getDate() - 5);
+            endDate.setDate(endDate.getDate() - 1);
+        break;
+        case "1": //one month
+            startDate.setDate(startDate.getDate() - 29);
+            endDate.setDate(endDate.getDate() - 1);
+        break;
+        case "2": //three months
+            startDate.setDate(startDate.getDate() - 89);
+            endDate.setDate(endDate.getDate() - 1);
+        break;
+        default:
+        break;
+    }
+
+    console.log(formatDateString(startDate));
+    console.log(formatDateString(endDate));
+    
     request("https://api.coindesk.com/v1/bpi/historical/close.json?start=" + formatDateString(startDate) + "&end=" + formatDateString(endDate), {json: true}, function (err1, res1, body1) {
         if (err1) { 
             res.status(500);
@@ -43,11 +61,11 @@ function collectData(req, res, next) {
     });
 }
 
-router.get('/prediction/:lookback', collectData, function (req, res) {
+router.get('/prediction/:timeframeId', collectData, function (req, res) {
     var today = new Date();
     req.historicalData[formatDateString(today)] = req.currentData;
 
-    var pyPredict = spawn('python', ['engine/make-predictions.py', JSON.stringify(req.historicalData), req.params.lookback]);
+    var pyPredict = spawn('python', ['engine/make-predictions.py', JSON.stringify(req.historicalData), req.params.timeframeId]);
     pyPredict.stdout.setEncoding("utf8");
 
     var dataStream = [];
