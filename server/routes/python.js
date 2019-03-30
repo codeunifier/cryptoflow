@@ -80,11 +80,21 @@ router.get('/prediction/:timeframeId', collectData, function (req, res) {
     pyPredict.stdout.on("end", function (data) {
         //TODO: get this working on staging
         //TensorFlow's output prints to stderr, so skip that stuff
-        if (errorStream.length > 3) {
-            console.log("ERROR IN PYTHON SCRIPT:");
-            console.log(errorStream);
-            res.json( { "prediction": null } );
-        } else {
+        var hasErrored = false;
+
+        if (errorStream.length > 0) {            
+            for (var idx in errorStream) {
+                if (errorStream[idx].toString().includes("Traceback")) {
+                    console.log("ERROR IN PYTHON SCRIPT:");
+                    console.log(errorStream);
+                    res.json( { "prediction": null } );
+                    hasErrored = true;
+                    break;
+                }
+            }
+        } 
+        
+        if (!hasErrored) {
             console.log("Python output:");
             console.log(dataStream);
             var last = dataStream.pop();

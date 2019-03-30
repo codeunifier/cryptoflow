@@ -16,6 +16,7 @@ import sys
 import demjson
 
 def predict(historicalData, timeframeId):
+    raise Exception("testing")
     #in javascript, the server tosses today's price at the end of historicalData
     data = []
     historicalData = demjson.decode(historicalData)
