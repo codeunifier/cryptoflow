@@ -1,0 +1,41 @@
+@import "../../scss/variables";
+
+.about {
+    font-size: 40px;
+    font-family: $chewy-font;
+}
+
+.about-para {
+    font-size: 20px;
+
+    a {
+        text-decoration: none;
+        color: purple;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+}
+
+.about-image-container {
+
+}
+
+.about-image {    
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.image-wide {
+    width: 550px;
+    height: auto;
+}
+
+.image-tall {
+    width: auto;
+    height: 200px;
+}
+
+.blank-space {
+    height: 100px;
+}

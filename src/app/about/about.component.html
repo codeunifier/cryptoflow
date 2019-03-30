@@ -1,0 +1,58 @@
+<div class="l-text-center">
+  <span class="about">About</span>
+</div>
+<div class="about-para">
+  <p>Cryptoflow was created to predict the prices of cryptocurrencies like Bitcoin utilizing the Python library TensorFlow; hence the name, Crypto-flow.</p>
+  <p>I developed this site to merely demonstrate a simple, working neural network making simple predictions using past data. Here, 
+    I'll pull back the curtain a little and explain the engine running the predictions.</p>
+  <p>The method I'm using to make predictions was initially based off a method used by many, many people all over the internet 
+    mainly because its results can appear to be very optimistic. Below is the graph of a model based on this method making 
+    predictions on data for bitcoin prices. At first glance, it seems like this model can make predictions with incredible accuracy. 
+    However, when viewed closely, what's actually happening is this model is simply spitting out the previous day's price slightly 
+    offset.</p>
+  <div class="about-image-container l-text-center">
+    <img class="about-image image-wide" src="../../assets/images/graph.png">
+    <img class="about-image image-wide" src="../../assets/images/graph-zoom.png">
+  </div>
+
+  <h3>Economics</h3>
+  <p>Rafael Schultze-Kraft goes into much more detail about this in 
+    <a href="https://hackernoon.com/dont-be-fooled-deceptive-cryptocurrency-price-predictions-using-deep-learning-bf27e4837151">
+      his explanation
+    </a> 
+    of this popular yet deceptive form of predicting the prices of cryptocurrencies.</p>
+  <p>At first I didn't quite realize what was going on. Each implementation of a neural network trying to attempt this task went 
+    a completely different way, creating different neural network models based off of different kinds of datasets, and it was 
+    all very confusing and overwhelming trying to sift through it all without understanding much about machine learning.</p>
+  <p>Even now, my model is nowhere near perfect, and I wouldn't even say it's accurate. When I started this project, I thought 
+    it would be relatively simple as far as a neural network goes. There's only one output (a predicted price) and a series of 
+    simple inputs (previous prices). This method, however, is 
+    <a href="https://medium.com/apteo/stock-prices-dont-predict-stock-prices-bbf3e421bedf">not an accurate way</a> 
+    to predict fluctuations in prices as volatile as cryptocurrency.</p>
+  <p>This is a <a href="https://en.wikipedia.org/wiki/Technical_analysis">Technical Analysis</a> approach, forecasting future prices 
+    based on the study of past data. The unfortunate reality is that cryptocurrencies adhere closer to 
+    <a href="https://www.investopedia.com/terms/r/randomwalktheory.asp">Random Walk Theory</a>, which suggests that changes in stock
+    prices are somewhat random and independent of each other, so they can't be used to predict future fluctuations. There are many, 
+    many factors that influence the direction stock prices will go, and cryptocurrencies are typically more volatile than stocks.</p>
+
+  <h3>Neural Networks</h3>
+  <p><a href="https://www.tensorflow.org/">TensorFlow</a> is a library dedicated to creating neural networks for machine learning. 
+    At the beginning of this project, I knew nothing of how machine learning actually worked nor had I any idea of how to actually 
+    develop any knid of learning model. I am also not an economist; I know little about what influences stock market prices or 
+    other volatile, fluctuating investments. If you haven't figured out already, the predictions here should absolutely be taken 
+    with a grain of salt and not used in sincere consideration of the state of the market.</p>
+  <p>The model I'm using is called a Long-Short Term Memory (LSTM) network. Without going too deep down the technical rabbit hole, 
+    I'll just say that an LSTM network focuses on using past data collectively as it considers its next prediction. As a neural 
+    network cycles through the data, it typically "forgets" about past data as soon as it makes a prediction with those inputs. 
+    LSTM networks hold on to that data a little longer, containing the data outside the normal flow of the recurrent network. 
+    For the eggheads, here's a depiction of the model that might make more sense (although it doesn't to me, to be honest).</p>
+
+  <h3>Code</h3>
+  <p>Alright, time to dive into some code.</p>
+  
+  <div class="about-image-container l-text-center">
+    <img class="about-image image-tall" src="../../assets/images/math.png">
+  </div>
+</div>
+<div class="blank-space">
+</div>

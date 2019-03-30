@@ -74,8 +74,8 @@ router.get('/prediction/:timeframeId', collectData, function (req, res) {
     pyPredict.stdout.on("data", function (data) {
         dataStream.push(data);
     });
-    pyPredict.stdout.on("error", function (data) {
-        errorStream.push(data);
+    pyPredict.stderr.on("data", function (data) {
+        //errorStream.push(data.toString());
     });
     pyPredict.stdout.on("end", function (data) {
         //TODO: get this working on staging

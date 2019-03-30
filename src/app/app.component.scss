@@ -1,42 +1,47 @@
 @import "../scss/variables";
 
-$title-height: 100px;
+$nav-height: 100px;
 $title-text-offest: 15;
 $title-font-size: 70px;
+$nav-button-font-size: 30px;
+
+.nav-bar {
+    width: $body-width;
+    min-width: $body-min-width;
+    max-width: $body-max-width;
+    height: $nav-height;
+    color: $nav-color;
+    background-color: $background-color;
+    font-family: $chewy-font;
+    cursor: default;
+}
+
+.nav-button-container {
+    height: 100%;
+    width: 200px;
+    line-height: $nav-height;
+    font-size: $nav-button-font-size;
+    text-align: center;
+}
+
+.nav-button {
+    color: $nav-color;
+    text-decoration: none;
+}
+
+.nav-button:hover {
+    text-decoration: underline;
+}
+
+.title {
+    line-height: $nav-height - $title-text-offest;
+    font-size: $title-font-size;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .wrapper {
     width: $body-width;
     min-width: $body-min-width;
     max-width: $body-max-width;
-    height: 100%;
-}
-
-.title {
-    width: 100%;
-    height: $title-height;
-    line-height: $title-height - $title-text-offest;
-    font-family: $chewy-font;
-    font-size: $title-font-size;
-    color: $title-color;
-    background-color: $background-color;
-    cursor: default;
-}
-
-.app-body {
-    height: 600px;
-}
-
-.app-cont {
-    height: 100%;
-    position: relative;
-}
-
-//TODO: fix this crap so that it actually works haha
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: $body-width;
-    /* Set the fixed height of the footer here */
-    height: 60px;
-    line-height: 60px; /* Vertically center the text there */
 }

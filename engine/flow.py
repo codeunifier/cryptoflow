@@ -26,7 +26,7 @@ from sklearn.metrics import mean_absolute_error
 from model import CryptoModel
 from graph import * 
 
-look_back = 29
+look_back = 1
 
 def create_dataset(dataset, look_back = 1):
     #function taken from https://activewizards.com/blog/bitcoin-price-forecasting-with-deep-learning-algorithms/

@@ -1,19 +1,15 @@
-<div class="wrapper l-horz-center">
+<nav class="nav-bar l-align-center">
+    <!--the order of these is a little weird because of the float-left and float-right-->
+    <div class="nav-button-container l-float-left">
+        <a routerLink="/" routerLinkActive="active" class="nav-button">Home</a>
+    </div>
+    <div class="nav-button-container l-float-right">
+        <a routerLink="/about" routerLinkActive="active" class="nav-button">About</a>
+    </div>
     <div class="title noselect l-text-center">
         <span>Cryptoflow</span>
     </div>
-    <div class="app-body">
-        <div class="app-cont">
-            <div class="l-float-left l-width-half">
-                <app-graph></app-graph>
-            </div>
-            <div class="l-float-right l-width-half">
-                <app-prediction></app-prediction>
-            </div>
-        </div>
-        <div>
-
-        </div>
-    </div>
-    <app-footer class="footer noselect"></app-footer>
+</nav>
+<div class="wrapper l-horz-center">
+    <router-outlet></router-outlet>
 </div>
