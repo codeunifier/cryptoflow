@@ -7,14 +7,6 @@ from datamanager import DataManager
 #read in the data
 full_data = pd.read_csv("./data/bitcoin_price.csv")
 
-#change the date into a timestamp format
-#full_data["timestamp"] = [datetime.datetime.strptime(date, "%b %d, %Y").timestamp() for date in full_data["Date"]]
-
-#shuffle it up a bit
-#TODO: check if I need to actually do this - with a LSTM model I'd imagine I still want to shuffle, 
-#   but I think I need more variables in my model than just the Closing price
-#full_data = shuffle(full_data)
-
 #scale the price data to lie between 0 and 1
 values = full_data["Close"].values.reshape(-1, 1)
 values = values.astype('float32')

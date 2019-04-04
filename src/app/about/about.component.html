@@ -46,12 +46,73 @@
     network cycles through the data, it typically "forgets" about past data as soon as it makes a prediction with those inputs. 
     LSTM networks hold on to that data a little longer, containing the data outside the normal flow of the recurrent network. 
     For the eggheads, here's a depiction of the model that might make more sense (although it doesn't to me, to be honest).</p>
-
-  <h3>Code</h3>
-  <p>Alright, time to dive into some code.</p>
-  
   <div class="about-image-container l-text-center">
     <img class="about-image image-tall" src="../../assets/images/math.png">
+  </div>
+  <p>A neural network is able to learn by going through this mathematical process through what's called an "epoch," or a single 
+    iteration through all of the data. During training, the model will make predictions and verify its predictions against another
+    set of data to see how close it got, and then make adjustments for the next prediction. Using calculus, the network is able to 
+    keep track of the difference between its prediction and the actual value, which is called loss. The network seeks to keep 
+    adjusting itself to minimize its loss, which it does in steps. As it continues, it takes steps to get closer and closer to 
+    the minimum loss.
+  </p>
+
+  <h3>Code</h3>
+  <p>Alright, time to dive into some code. This is probably where I'm going to start losing people, but here it goes. Below is 
+    the model for the neural network I'm using. I've got two LSTM layers and a single Dense layer, compressing the output from 
+    the LSTM layers into a single value (a price). I wrapped it in a CryptoModel class for ease of use throughout my program. 
+    Getting to this point was a bit of a struggle. It took a lot of tweaking of several variables to finally get something 
+    that seemed accurate.</p>
+  <pre>
+    <code>
+  class CryptoModel:
+    __model = None
+
+    def create(self, shape):
+      units = 50
+      self.__model = keras.models.Sequential()
+
+      self.__model.add(keras.layers.LSTM(units, return_sequences=True, input_shape=(shape[1], shape[2])))   # first LSTM layer
+      self.__model.add(keras.layers.LSTM(units, input_shape=(shape[1], shape[2])))                          # second LSTM layer
+      self.__model.add(keras.layers.Dense(1)) #1 = a single output node                                     # dense layer
+      self.__model.compile(loss="mse", optimizer="adam", metrics=['accuracy'])
+
+    def train(self, train_x, train_y, test_x, test_y):
+      return self.__model.fit(train_x, train_y, epochs=100, batch_size=200, validation_data=(test_x, test_y), verbose=0, shuffle=False)
+    
+    def predict(self, x):
+      return self.__model.predict(x)
+    </code>
+  </pre>
+  <p>At first, my model only had a single LSTM layer, and I was calculating loss by the Mean Aboslute Error (mae). The mae is 
+    calculated by taking the average magnitude of the errors in a set of predictions. In Layman's terms, it's the average of 
+    how wrong each prediction was. The network uses this value of loss to make better predictions in the next iteration.
+  </p>
+  <p>This approach worked...sort of. Below is a graph of the predictions against actual values and a graph showing the loss over 
+    each iteration. The steeper the loss's descent and the lower the loss plateaus, the better. Ideally, we would want no loss 
+    at all, indicating highly accurate predictions.
+  </p>
+  <div class="about-image-container l-text-center">
+    <img class="about-image image-wide" src="../../assets/images/graph-layer-1.png">
+    <img class="about-image image-wide" src="../../assets/images/loss-layer-1.png">
+  </div>
+  <p>Obviously, some improvements could be made. At this point, I adjusted the number of epochs the model would cycle through 
+    and added the second LSTM layer, and below are my results.
+  </p>
+  <div class="about-image-container l-text-center">
+    <img class="about-image image-wide" src="../../assets/images/graph-layer-2.png">
+    <img class="about-image image-wide" src="../../assets/images/loss-layer-2.png">
+  </div>
+  <p>Definitely better, but still not quite as accurate as it could be. The issue here is that the model is overfitting the data. 
+    Essentially, this means that the model is fitting a particular data set too closely, so when new data comes in, it's not as 
+    accurate. It's like it's learned something wrong and can't get that wrong idea out of its head. So, to help prevent overfitting, 
+    I halved the number of epochs and switched the loss metric to the Root Mean Squared Error (rmse). The rmse uses mae in its 
+    calculation, but then it takes the square root of the average of squared differences between the prediction and the actual 
+    value. A little complicated to follow, but my end results look pretty promising.
+  </p>
+  <div class="about-image-container l-text-center">
+    <img class="about-image image-wide" src="../../assets/images/graph-current.png">
+    <img class="about-image image-wide" src="../../assets/images/loss-current.png">
   </div>
 </div>
 <div class="blank-space">

@@ -11,3 +11,11 @@ button {
     font-family: $chewy-font;
     font-size: 25px;
 }
+
+pre {
+    background-color: lightgrey;
+
+    code {
+        font-size: 15px;
+    }
+}

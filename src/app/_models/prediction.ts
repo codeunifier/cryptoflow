@@ -5,4 +5,5 @@ export class Prediction {
     disclaimer: string;
     historical: any;
     prediction: number;
+    timeframeId: number;
 }

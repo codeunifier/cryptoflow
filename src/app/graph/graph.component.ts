@@ -54,9 +54,6 @@ export class GraphComponent implements OnInit {
             if (this.data != null) {
                 this.createGraphLabelsAndPrices();
 
-                let pricesWithToday = Object.assign([], this.data.prices);
-                pricesWithToday.push(this.data.current);
-
                 this.graph = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -109,10 +106,7 @@ export class GraphComponent implements OnInit {
 
         switch(this.predictionService.timeframeId) {
             case 0: //1 week
-                //we don't want to display the first historical date
-                this.data.historical.delete(this.data.historical.keys().next().value);
-
-                //we want to go 5 days back
+                //historical contains today's value as well
                 this.data.historical.forEach(function (value, key) {
                     let weekday: string = new Date(key).toLocaleDateString('en-US', {weekday: 'long'});
         
@@ -120,10 +114,10 @@ export class GraphComponent implements OnInit {
                     _this.data.prices.push(value);
                 });
         
-                this.data.labels.push("Today");
-                this.data.prices.push(this.data.current);
+                let d: Date = new Date();
+                d.setDate(d.getDate() + 1);
 
-                this.data.labels.push("Tomorrow");
+                this.data.labels.push(d.toLocaleDateString('en-US', {weekday: 'long'}));
                 this.data.prices.push(this.data.prediction);
             break;
             case 1: //1 month

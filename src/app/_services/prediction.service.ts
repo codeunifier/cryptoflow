@@ -60,6 +60,7 @@ export class PredictionService {
           this.currentStateChange.next(PredictionStates.Errored);
         } else {
           this.prediction = p;
+          this.prediction.timeframeId = this.timeframeId;
           //this probably should be passed down from the server call, but meh
           this.disclaimer = "Disclaimer: This data was produced from the CoinDesk Bitcoin Price Index. BPI value data returned as USD.";
           this.currentStateChange.next(PredictionStates.Finished);
